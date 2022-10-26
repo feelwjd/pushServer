@@ -4,4 +4,6 @@ const pushMessageRouter = express.Router();
 
 pushMessageRouter.post("/send",pushMessageController.send);
 
+pushMessageRouter.post("/receive",pushMessageController.receive);
+
 module.exports = pushMessageRouter;

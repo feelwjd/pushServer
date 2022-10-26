@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Timestamp, OneToMany } from "typeorm"
 
 @Entity()
 export class PushList {
@@ -10,7 +10,7 @@ export class PushList {
     name!: string
 
     @Column()
-    date!: number
+    date!: string
 
     @Column()
     start_time!: string

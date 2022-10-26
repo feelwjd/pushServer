@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm"
+import { PushList } from "./pushList"
 
 @Entity()
 export class PushToken {
@@ -6,7 +7,7 @@ export class PushToken {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column()
+    @ManyToOne(() => PushList, (pushList) => pushList.id)
     list_id!: number
 
     @Column()

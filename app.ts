@@ -4,7 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import admin from 'firebase-admin';
 import { AppDataSource } from "./config/config"
-import "reflect-metadata"; 
+import "reflect-metadata";
+import { job } from './controller/autoScheduler';
 const serviceAccount = require("./config/mcnc-2team-firebase-adminsdk-stv3k-e9837e834a");
 const pushMessageRouter = require('./routes/pushMessageRouter');
 dotenv.config();
@@ -35,5 +36,5 @@ app.listen(process.env.PORT,()=>{
     `);
 });
 
-
+job();
 module.exports = app;
