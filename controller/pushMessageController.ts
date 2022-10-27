@@ -41,26 +41,35 @@ export = {
             })
     },
     receive:async (req: Request, res: Response, next: NextFunction) => {
-        const tokens: string = req.body.token;
         try{
+            const tokens = req.body.token;
             const pushList = new PushList();
             pushList.name = req.body.name;
             pushList.date = req.body.date;
             pushList.start_time = req.body.start_time;
+            
             const pushListRepository = AppDataSource.getRepository(PushList);
             if (await pushListRepository.findOne({where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}}) == null){
-                await pushListRepository.save(pushList);
-                const listId = await pushListRepository.findOne({
-                    where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}
-                });
-
-                const pushTokenRepository = AppDataSource.getRepository(PushToken);
-                for (let i =0 ; i<tokens.length; i++){
-                    const tokenList = new PushToken();
-                    tokenList.list_id = listId!.id
-                    tokenList.token = tokens[i];
-                    await pushTokenRepository.save(tokenList);
+                
+                for(let i = 0 ; i<tokens.length ; i++){
+                    const pushToken = new PushToken();
+                    pushToken.token = tokens[i];
+                    await AppDataSource.getRepository(PushToken).save(pushToken);
+                    pushList.list = [pushToken]
                 }
+                
+                await pushListRepository.save(pushList);
+                // const listId = await pushListRepository.findOne({
+                //     where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}
+                // });
+
+                // const pushTokenRepository = AppDataSource.getRepository(PushToken);
+                // for (let i =0 ; i<tokens.length; i++){
+                //     const tokenList = new PushToken();
+                    
+                //     tokenList.token = tokens[i];
+                //     await pushTokenRepository.save(tokenList);
+                // }
                 
                 res.send("receive Success.").status(201);
             }else{

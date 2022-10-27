@@ -7,10 +7,10 @@ export class PushToken {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @ManyToOne(() => PushList, (pushList) => pushList.id)
-    list_id!: number
-
     @Column()
     token!: string
+
+    @ManyToOne(() => PushList, (pushList) => pushList.list)
+    list!: PushList
     
 }
