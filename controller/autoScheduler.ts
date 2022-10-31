@@ -6,7 +6,6 @@ import { AppDataSource } from '../config/config';
 import { PushList } from '../model/pushList';
 import { PushToken } from '../model/pushToken';
 dotenv.config();
-const serviceAccount = require("../config/mcnc-2team-firebase-adminsdk-stv3k-e9837e834a");
 
 export function job(){
     const rule = new schedule.RecurrenceRule();
@@ -18,29 +17,27 @@ export function job(){
         const pushListRepository = AppDataSource.getRepository(PushList);
         const tokenListRepository = AppDataSource.getRepository(PushToken);
         let pushList = await pushListRepository.find({where: {date : nowDate, start_time : nowTime}});
-        // for (let i = 0 ; i<pushList.length ; i++){
-        //     let tokenList = await tokenListRepository.find({where : {list_id: pushList[i].id}});
-        //     console.log(tokenList);
-        //     console.log(pushList[i].id);
-        //     // for (let x = 0; x<tokenList.length ; x++){
-        //     //     let message = {
-        //     //         notification: {
-        //     //             title: "bizRoom",
-        //     //             body: pushList[i].name,
-        //     //         },
-        //     //         token: tokenList[x].token
-        //     //     }
-        //     //     admin
-        //     //         .messaging()
-        //     //         .send(message)
-        //     //         .then(function (response){
-        //     //             LogSet("i","SND001","FCMS","SS");
-        //     //         })
-        //     //         .catch((error)=>{
-        //     //             LogSet("e","SND001","FCMS",error);
-        //     //         })
-        //     // }
+        for (let i = 0 ; i<pushList.length ; i++){
+            let tokenList = await tokenListRepository.find({where : {list : pushList[i]}});
             
-        // }
+            for (let x = 0; x<tokenList.length ; x++){
+                let message = {
+                    notification: {
+                        title: "bizRoom",
+                        body: pushList[i].name,
+                    },
+                    token: tokenList[x].token
+                }
+                admin
+                    .messaging()
+                    .send(message)
+                    .then(function (response){
+                        LogSet("i","SND001","FCMS","SS");
+                    })
+                    .catch((error)=>{
+                        LogSet("e","SND001","FCMS",error);
+                    })
+            }
+        }
     });
 }

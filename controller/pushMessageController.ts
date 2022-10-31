@@ -6,8 +6,6 @@ import schedule from 'node-schedule';
 import { PushList } from "../model/pushList";
 import { PushToken } from "../model/pushToken";
 import { AppDataSource } from "../config/config";
-import moment from "moment-timezone";
-const serviceAccount = require("../config/mcnc-2team-firebase-adminsdk-stv3k-e9837e834a");
 dotenv.config();
 
 export = {
@@ -50,27 +48,15 @@ export = {
             
             const pushListRepository = AppDataSource.getRepository(PushList);
             if (await pushListRepository.findOne({where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}}) == null){
-                
+                const tokenList:Array<PushToken> = [];
                 for(let i = 0 ; i<tokens.length ; i++){
                     const pushToken = new PushToken();
                     pushToken.token = tokens[i];
                     await AppDataSource.getRepository(PushToken).save(pushToken);
-                    pushList.list = [pushToken]
+                    tokenList.push(pushToken);
                 }
-                
+                pushList.list = tokenList;
                 await pushListRepository.save(pushList);
-                // const listId = await pushListRepository.findOne({
-                //     where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}
-                // });
-
-                // const pushTokenRepository = AppDataSource.getRepository(PushToken);
-                // for (let i =0 ; i<tokens.length; i++){
-                //     const tokenList = new PushToken();
-                    
-                //     tokenList.token = tokens[i];
-                //     await pushTokenRepository.save(tokenList);
-                // }
-                
                 res.send("receive Success.").status(201);
             }else{
                 LogSet("e","REC001","RECV","RO");
