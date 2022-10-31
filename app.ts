@@ -27,7 +27,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
-console.log(process.env.INSTANCE_ID);
 if(process.env.INSTANCE_ID == "1"){
     console.log(`
         ############################################

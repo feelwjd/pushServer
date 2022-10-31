@@ -5,6 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "start": "nodemon app.ts",
+    "dev": "pm2 start ecosystem.config.js app --env development",
+    "production": "pm2 start ecosystem.config.js app --env production",
     "build": "tsc -p .",
     "test": "mocha test.ts",
     "migrate" : "ts-node migration/index.ts"
