@@ -26,15 +26,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use("/push",pushMessageRouter);
 
-app.listen(process.env.PORT,()=>{
+console.log(process.env.INSTANCE_ID);
+if(process.env.INSTANCE_ID == "1"){
     console.log(`
-    ############################################
-        🛡️  Server listening on port: ${process.env.PORT}🛡️
-    ############################################
-    `);
-});
+        ############################################
+                     🛡️  Start Job  🛡️
+        ############################################
+        `);
+    job();
+}else{
+    app.use("/push",pushMessageRouter);
+    app.listen(process.env.PORT,()=>{
+        console.log(`
+        ############################################
+            🛡️  Server listening on port: ${process.env.PORT}🛡️
+        ############################################
+        `);
+    });
+}
 
-job();
 module.exports = app;
