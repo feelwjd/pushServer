@@ -57,6 +57,7 @@ export = {
                 }
                 pushList.list = tokenList;
                 await pushListRepository.save(pushList);
+                LogSet("i","REC001","RECV","RS");
                 res.send("receive Success.").status(201);
             }else{
                 LogSet("e","REC001","RECV","RO");
@@ -66,7 +67,63 @@ export = {
             LogSet("e","REC001","RECV","RF");
             res.send("receive Fail.").status(400);
         }
-        
-        
+    },
+    delete:async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const name: string = req.body.name;
+            const date: string = req.body.date;
+            const start_time: string = req.body.start_time;
+            const pushListRepository = AppDataSource.getRepository(PushList);
+            const tokenListRepository = AppDataSource.getRepository(PushToken);
+
+            const pushList = await pushListRepository.find({where: {name: name, date: date, start_time: start_time}});
+            const tokenList = await tokenListRepository.find({where: {list : pushList[0]}});
+
+            await tokenListRepository.remove(tokenList);
+            await pushListRepository.remove(pushList);
+            LogSet("i","DEL001","DELC","DS");
+            res.send("delete success.").status(201);
+        }catch(error){
+            LogSet("e","DEL001","DELC","DF");
+            res.send("delete Fail.").status(400);
+        }
+    },
+    update:async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const name: string = req.body.name;
+            const date: string = req.body.date;
+            const start_time: string = req.body.start_time;
+            const new_name: string = req.body.new_name;
+            const new_date: string = req.body.new_date;
+            const new_start_time: string = req.body.new_start_time;
+            const token = req.body.token;
+
+            const pushListRepository = AppDataSource.getRepository(PushList);
+            const tokenListRepository = AppDataSource.getRepository(PushToken);
+            const pushList = await pushListRepository.find({where: {name: name, date: date, start_time: start_time}});
+            const tokenList = await tokenListRepository.find({where: {list : pushList[0]}});
+            await tokenListRepository.remove(tokenList);
+            
+            await AppDataSource.createQueryBuilder()
+            .update(PushList)
+            .set({name: new_name, date: new_date, start_time: new_start_time})
+            .where("name = :name",{name: name})
+            .where("date = :date",{date: date})
+            .where("start_time = :start_time",{start_time: start_time})
+            .execute();
+            
+            for (let i = 0; i<tokenList.length; i++){
+                const pushToken = new PushToken();
+                pushToken.token = token[i];
+                pushToken.list = pushList[0];
+                await AppDataSource.getRepository(PushToken).save(pushToken);
+            }
+            
+            LogSet("i","UPD001","UPDC","US");
+            res.send("update success.").status(201);
+        }catch(error){
+            LogSet("e","UPD001","UPDC","UF");
+            res.send("update Fail.").status(400);
+        }
     }
 }

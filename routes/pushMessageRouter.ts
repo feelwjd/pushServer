@@ -6,4 +6,8 @@ pushMessageRouter.post("/send",pushMessageController.send);
 
 pushMessageRouter.post("/receive",pushMessageController.receive);
 
+pushMessageRouter.post("/delete",pushMessageController.delete);
+
+pushMessageRouter.post("/update",pushMessageController.update);
+
 module.exports = pushMessageRouter;
