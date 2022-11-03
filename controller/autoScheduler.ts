@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { AppDataSource } from '../config/config';
 import { PushList } from '../model/pushList';
 import { PushToken } from '../model/pushToken';
+import { addZero } from '../module/addZero';
 dotenv.config();
 
 export function job(){
@@ -12,8 +13,8 @@ export function job(){
     rule.minute = new schedule.Range(0,59,1);
     schedule.scheduleJob(rule,async () => {
         let datetime = new Date;
-        let nowTime = datetime.getHours() + ':' + datetime.getMinutes();
-        let nowDate = datetime.getFullYear()+'-'+(datetime.getMonth()+1)+'-'+datetime.getDate();
+        let nowTime = addZero(datetime.getHours()) + ':' + addZero(datetime.getMinutes()) + ':00';
+        let nowDate = datetime.getFullYear()+'-'+addZero(datetime.getMonth()+1)+'-'+addZero(datetime.getDate());
         const pushListRepository = AppDataSource.getRepository(PushList);
         const tokenListRepository = AppDataSource.getRepository(PushToken);
         let pushList = await pushListRepository.find({where: {date : nowDate, start_time : nowTime}});
