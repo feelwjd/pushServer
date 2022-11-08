@@ -6,7 +6,7 @@ import admin from 'firebase-admin';
 import { AppDataSource } from "./config/config"
 import "reflect-metadata";
 import { job } from './controller/autoScheduler';
-const serviceAccount = require("./config/mcnc-2team-firebase-adminsdk-stv3k-e9837e834a");
+const serviceAccount = require("./config/mcnc-2team-firebase-adminsdk-stv3k-82b8932055.json");
 const pushMessageRouter = require('./routes/pushMessageRouter');
 dotenv.config();
 AppDataSource.initialize()

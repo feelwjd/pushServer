@@ -144,6 +144,7 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node
 
 config/mcnc-2team-firebase-adminsdk-stv3k-e9837e834a.json
+config/mcnc-2team-firebase-adminsdk-stv3k-82b8932055.json
 
 # bin
 bin/www
