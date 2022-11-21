@@ -45,9 +45,11 @@ export = {
             pushList.name = req.body.name;
             pushList.date = req.body.date;
             pushList.start_time = req.body.start_time;
+            pushList.rsv_id = req.body.rsv_id;
+            pushList.room = req.body.room;
             
             const pushListRepository = AppDataSource.getRepository(PushList);
-            if (await pushListRepository.findOne({where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time}}) == null){
+            if (await pushListRepository.findOne({where: {name: req.body.name, date: req.body.date, start_time: req.body.start_time, rsv_id: req.body.rsv_id, room: req.body.room}}) == null){
                 const tokenList:Array<PushToken> = [];
                 for(let i = 0 ; i<tokens.length ; i++){
                     const pushToken = new PushToken();
@@ -70,13 +72,12 @@ export = {
     },
     delete:async (req: Request, res: Response, next: NextFunction) => {
         try{
-            const name: string = req.body.name;
-            const date: string = req.body.date;
-            const start_time: string = req.body.start_time;
+            const rsv_id: number = req.body.rsv_id;
+            
             const pushListRepository = AppDataSource.getRepository(PushList);
             const tokenListRepository = AppDataSource.getRepository(PushToken);
 
-            const pushList = await pushListRepository.find({where: {name: name, date: date, start_time: start_time}});
+            const pushList = await pushListRepository.find({where: {rsv_id: rsv_id}});
             const tokenList = await tokenListRepository.find({where: {list : pushList[0]}});
 
             await tokenListRepository.remove(tokenList);
@@ -90,9 +91,9 @@ export = {
     },
     update:async (req: Request, res: Response, next: NextFunction) => {
         try{
-            const name: string = req.body.name;
-            const date: string = req.body.date;
-            const start_time: string = req.body.start_time;
+            const rsv_id: number = req.body.rsv_id;
+            const room: string = req.body.room;
+            
             const new_name: string = req.body.new_name;
             const new_date: string = req.body.new_date;
             const new_start_time: string = req.body.new_start_time;
@@ -100,16 +101,15 @@ export = {
 
             const pushListRepository = AppDataSource.getRepository(PushList);
             const tokenListRepository = AppDataSource.getRepository(PushToken);
-            const pushList = await pushListRepository.find({where: {name: name, date: date, start_time: start_time}});
+            const pushList = await pushListRepository.find({where: {rsv_id: rsv_id, room: room}});
             const tokenList = await tokenListRepository.find({where: {list : pushList[0]}});
             await tokenListRepository.remove(tokenList);
             
             await AppDataSource.createQueryBuilder()
             .update(PushList)
             .set({name: new_name, date: new_date, start_time: new_start_time})
-            .where("name = :name",{name: name})
-            .where("date = :date",{date: date})
-            .where("start_time = :start_time",{start_time: start_time})
+            .where("rsv_id = :rsv_id",{rsv_id: rsv_id})
+            .where("room = :room",{room: room})
             .execute();
             
             for (let i = 0; i<tokenList.length; i++){

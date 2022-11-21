@@ -16,6 +16,12 @@ export class PushList {
     @Column()
     start_time!: string
 
+    @Column()
+    rsv_id!: number
+
+    @Column()
+    room!: string
+
     @OneToMany(()=> PushToken, (pushToken) => pushToken.list)
     list!: PushToken[]
 
