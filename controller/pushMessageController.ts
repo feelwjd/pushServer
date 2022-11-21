@@ -109,10 +109,9 @@ export = {
             .update(PushList)
             .set({name: new_name, date: new_date, start_time: new_start_time})
             .where("rsv_id = :rsv_id",{rsv_id: rsv_id})
-            .where("room = :room",{room: room})
             .execute();
             
-            for (let i = 0; i<tokenList.length; i++){
+            for (let i = 0; i<token.length; i++){
                 const pushToken = new PushToken();
                 pushToken.token = token[i];
                 pushToken.list = pushList[0];
