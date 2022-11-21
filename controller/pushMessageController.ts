@@ -101,13 +101,13 @@ export = {
 
             const pushListRepository = AppDataSource.getRepository(PushList);
             const tokenListRepository = AppDataSource.getRepository(PushToken);
-            const pushList = await pushListRepository.find({where: {rsv_id: rsv_id, room: room}});
+            const pushList = await pushListRepository.find({where: {rsv_id: rsv_id}});
             const tokenList = await tokenListRepository.find({where: {list : pushList[0]}});
             await tokenListRepository.remove(tokenList);
             
             await AppDataSource.createQueryBuilder()
             .update(PushList)
-            .set({name: new_name, date: new_date, start_time: new_start_time})
+            .set({name: new_name, date: new_date, start_time: new_start_time, room: room})
             .where("rsv_id = :rsv_id",{rsv_id: rsv_id})
             .execute();
             
