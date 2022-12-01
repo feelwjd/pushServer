@@ -25,7 +25,7 @@ export function job(){
                 let message = {
                     notification: {
                         title: "bizRoom",
-                        body: pushList[i].name,
+                        body: "["+pushList[i].name+"] 회의 시작 10분전입니다.",
                     },
                     token: tokenList[x].token
                 }
